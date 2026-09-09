@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ระบบออกบัตรประจำตัวอาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ อพม.</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-pink: #f94c8b;
+        --gradient-pink: linear-gradient(135deg, #f94c8b 0%, #fb72a3 100%);
+        --bg-light: #fff5f8;
+        --text-dark: #333333;
+        --text-gray: #7a7a7a;
+        --card-border: #ffd1df;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Prompt", sans-serif;
+      }
+      body {
+        background: linear-gradient(180deg, #fdfbfb 0%, #ffe4ee 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 5%;
+        background: transparent;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logo-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .logo-text h2 {
+        color: var(--primary-pink);
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .logo-text p {
+        color: var(--text-gray);
+        font-size: 14px;
+      }
+
+      .login-btn {
+        background: var(--gradient-pink);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+        transition: transform 0.2s;
+      }
+      .login-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        padding: 0 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+        text-align: center;
+      }
+      .hero-content {
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        background-color: #ffe0eb;
+        color: var(--primary-pink);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        border: 1px solid var(--card-border);
+      }
+      .badge i {
+        margin-right: 5px;
+      }
+
+      .hero-content h1 {
+        font-size: 64px;
+        color: var(--text-dark);
+        line-height: 1.1;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+      .hero-content h1 .pink {
+        color: var(--primary-pink);
+      }
+      .hero-content > p {
+        font-size: 18px;
+        color: var(--text-gray);
+        margin-bottom: 50px;
+      }
+
+      .action-cards-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .action-card {
+        background: white;
+        border: 2px solid var(--card-border);
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        width: 360px; /* ขยายขนาดกว้างขึ้นเล็กน้อยเพื่อรองรับข้อความยาว */
+        height: 115px;
+        text-align: left;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s;
+        position: relative;
+      }
+      .action-card:hover {
+        box-shadow: 0 15px 35px rgba(249, 76, 139, 0.15);
+        transform: translateY(-5px);
+      }
+
+      .card-icon-circle {
+        width: 60px;
+        height: 60px;
+        background: #ffe0eb;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary-pink);
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+
+      .card-info {
+        padding-right: 45px; /* กันไม่ให้ข้อความยาววิ่งไปชนปุ่มลูกศรด้านขวา */
+      }
+      .card-info h3 {
+        color: var(--text-dark);
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      .card-info p {
+        color: var(--text-gray);
+        font-size: 13px; /* ปรับขนาดเล็กลงนิดนึงให้อยู่ในกรอบสวยงาม */
+        line-height: 1.4;
+      }
+
+      .btn-arrow {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-pink);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        position: absolute;
+        right: 20px;
+        box-shadow: 0 4px 10px rgba(249, 76, 139, 0.4);
+      }
+
+      .action-card.disabled {
+        background: #fafafa;
+        border: 2px solid #eaeaea;
+        cursor: not-allowed;
+      }
+      .action-card.disabled .card-icon-circle {
+        background: #e6e6e6;
+        color: #999;
+      }
+      .action-card.disabled .card-info h3 {
+        color: #999;
+      }
+      .icon-lock {
+        position: absolute;
+        right: 20px;
+        color: #b3b3b3;
+        font-size: 24px;
+      }
+
+      /* เปลี่ยนดีไซน์ Footer ใหม่ให้เข้ากับโลโก้สีชมพู */
+      footer {
+        background-color: #ffffff;
+        background-image:
+          radial-gradient(circle at top right, #ffe6f0 0%, transparent 50%),
+          radial-gradient(circle at bottom left, #ffe6f0 0%, transparent 50%);
+        border-top: 2px solid var(--card-border);
+        color: var(--text-dark);
+        padding: 30px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .footer-logo .logo-icon {
+        background: transparent;
+        width: 55px; /* ขยายโลโก้ footer ให้ชัดเจนขึ้น */
+        height: 55px;
+        box-shadow: none;
+      }
+
+      .footer-logo-text h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-pink); /* เปลี่ยนสีตัวอักษรให้เป็นสีชมพู */
+      }
+      .footer-logo-text p {
+        font-size: 13px;
+        color: var(--text-gray);
+      }
+      .copyright {
+        width: 100%;
+        text-align: left;
+        font-size: 12px;
+        color: var(--text-gray);
+        margin-top: 10px;
+      }
+      .footer-left {
+        display: flex;
+        flex-direction: column;
+      }
+
+      @media (max-width: 1024px) {
+        .action-cards-container {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 48px;
+        }
+        footer {
+          flex-direction: column;
+          gap: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">
+          <!-- เรียกใช้ไฟล์รูปภาพตราสัญลักษณ์ (เปลี่ยน \ เป็น /) -->
+          <img
+            src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
+            alt="ตราสัญลักษณ์ พม."
+          />
+        </div>
+        <div class="logo-text">
+          <h2>ระบบออกบัตรประจำตัว</h2>
+          <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ อพม.</p>
+        </div>
+      </div>
+      <!-- <button class="login-btn">
+        <i class="fa-regular fa-user"></i> เข้าสู่ระบบเจ้าหน้าที่
+      </button> -->
+    </header>
+
+    <main class="hero">
+      <div class="hero-content">
+        <!-- <div class="badge">
+          <i class="fa-solid fa-shield-halved"></i> ระบบออกบัตรออนไลน์
+        </div>
+        <h1>
+          ออกบัตร<span class="pink">ง่าย</span><br />รวดเร็ว
+          <span class="pink">ทันสมัย</span>
+        </h1>
+        <p>ระบบออกบัตรที่ปลอดภัย สะดวก รวดเร็ว ครบจบในระบบเดียว</p> -->
+
+        <div class="action-cards-container">
+          <!-- ลิงก์ไปหน้าทำบัตร -->
+          <a href="add-user.html" class="action-card">
+            <div class="card-icon-circle">
+              <i class="fa-solid fa-id-card-clip"></i>
+            </div>
+            <div class="card-info">
+              <h3>ออกบัตรประจำตัว</h3>
+              <!-- ใส่ <br> เพื่อบังคับขึ้นบรรทัดใหม่ตรงหน้าคำว่า และ -->
+              <p>อาสาสมัครพัฒนาสังคมและ<br />ความมั่นคงของมนุษย์ (อพม.)</p>
+            </div>
+            <div class="btn-arrow">
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+          </a>
+
+          <div class="action-card disabled">
+            <div class="card-icon-circle">
+              <i class="fa-regular fa-calendar-days"></i>
+            </div>
+            <div class="card-info">
+              <h3>Coming Soon</h3>
+              <p>เร็วๆ นี้</p>
+            </div>
+            <i class="fa-solid fa-lock icon-lock"></i>
+          </div>
+
+          <div class="action-card disabled">
+            <div class="card-icon-circle">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div class="card-info">
+              <h3>Coming Soon</h3>
+              <p>เร็วๆ นี้</p>
+            </div>
+            <i class="fa-solid fa-lock icon-lock"></i>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-left">
+        <div class="footer-logo">
+          <!-- <div class="logo-icon">
+            <img
+              src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
+              alt="ตราสัญลักษณ์ พม."
+            />
+          </div> -->
+          <div class="footer-logo-text">
+            <h2>ระบบออกบัตรประจำตัว</h2>
+            <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ (อพม.)</p>
+          </div>
+        </div>
+        <div class="copyright">&copy; 2026 All rights reserved.</div>
+      </div>
+    </footer>
+  </body>
+</html>

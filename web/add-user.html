@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>กรอกข้อมูลออกบัตร อพม.</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-pink: #f94c8b;
+        --gradient-pink: linear-gradient(135deg, #f94c8b 0%, #ff6a9f 100%);
+        --bg-main: #fafbfe;
+        --bg-panel: #ffffff;
+        --text-dark: #333333;
+        --text-gray: #777777;
+        --text-light: #aaaaaa;
+        --border-color: #eeeeee;
+        --sidebar-width: 310px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Prompt", sans-serif;
+      }
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-dark);
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--bg-panel);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+        transition: width 0.3s ease;
+        height: 100vh;
+      }
+      .sidebar-top {
+        padding: 20px 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar.collapsed .brand {
+        padding: 0;
+        justify-content: center;
+      }
+      .sidebar.collapsed .brand-text,
+      .sidebar.collapsed .brand-icon {
+        display: none;
+      }
+      .sidebar.collapsed .nav-link span {
+        display: none;
+      }
+      .sidebar.collapsed .nav-link {
+        justify-content: center;
+        padding: 12px 0;
+      }
+      .sidebar.collapsed .nav-link i {
+        font-size: 20px;
+        margin: 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        margin-bottom: 30px;
+      }
+      .menu-toggle {
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        color: var(--text-gray);
+        cursor: pointer;
+        transition: color 0.2s;
+        padding: 5px;
+        flex-shrink: 0;
+      }
+      .menu-toggle:hover {
+        color: var(--primary-pink);
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .brand-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .brand-text {
+        white-space: nowrap;
+      }
+      .brand-text h2 {
+        font-size: 15px;
+        color: var(--primary-pink);
+        line-height: 1.2;
+        margin-bottom: 2px;
+      }
+      .brand-text p {
+        font-size: 9.5px;
+        letter-spacing: -0.2px;
+        color: var(--text-gray);
+        line-height: 1.3;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+      .nav-item {
+        padding: 5px 20px;
+        margin-bottom: 5px;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        color: var(--text-gray);
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .nav-link:hover {
+        background-color: #fff5f8;
+        color: var(--primary-pink);
+      }
+      .nav-item.active .nav-link {
+        background: var(--gradient-pink);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: #fafbfe;
+      }
+      .dashboard-layout {
+        padding: 25px;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .panel {
+        background: var(--bg-panel);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .title-with-back {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .btn-back-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-gray);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        flex-shrink: 0;
+      }
+      .btn-back-circle:hover {
+        background: #fff0f5;
+        color: var(--primary-pink);
+        border-color: #ffb8d2;
+        transform: translateX(-3px);
+      }
+      .section-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .section-icon {
+        width: 50px;
+        height: 50px;
+        background: #fff0f5;
+        color: var(--primary-pink);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+      }
+      .section-title h2 {
+        font-size: 18px;
+        color: var(--text-dark);
+      }
+      .section-title p {
+        font-size: 13px;
+        color: var(--text-gray);
+      }
+
+      /* ส่วนตั้งค่าแบบใหม่ */
+      .setup-section {
+        background: #fff0f5;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        border: 1px solid #ffe0eb;
+      }
+      .type-selector {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #ffb8d2;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .radio-group {
+        display: flex;
+        gap: 20px;
+      }
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text-dark);
+        font-weight: 500;
+      }
+      .radio-group input[type="radio"] {
+        accent-color: var(--primary-pink);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--primary-pink);
+        color: white;
+        border: none;
+        padding: 0 20px;
+        height: 38px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #e03b78;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 15px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.col-2 {
+        grid-column: span 2;
+      }
+      .form-group.col-4 {
+        grid-column: span 4;
+      }
+      .form-group.col-5 {
+        grid-column: span 5;
+      }
+      .form-group.col-6 {
+        grid-column: span 6;
+      }
+      .form-group.col-12 {
+        grid-column: span 12;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+      .req {
+        color: #ff4d4f;
+      }
+      .form-control {
+        width: 100%;
+        height: 42px;
+        padding: 0 15px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-dark);
+        outline: none;
+        transition: all 0.3s;
+        background-color: #ffffff;
+      }
+      .form-control:focus {
+        border-color: var(--primary-pink);
+        box-shadow: 0 0 0 3px rgba(249, 76, 139, 0.1);
+      }
+
+      .photo-upload-section {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      .photo-preview {
+        width: 110px;
+        height: 135px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #aaa;
+        position: relative;
+      }
+      .photo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+      }
+      .upload-box {
+        flex: 1;
+        border: 2px dashed #d9d9d9;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #fafafa;
+      }
+      .upload-box:hover {
+        border-color: var(--primary-pink);
+        background: #fff0f5;
+      }
+      .upload-box i {
+        font-size: 24px;
+        color: var(--text-gray);
+        margin-bottom: 10px;
+      }
+      .upload-box p {
+        font-size: 13px;
+        color: var(--text-dark);
+        font-weight: 500;
+      }
+      .upload-box span {
+        font-size: 11px;
+        color: var(--text-light);
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        border: none;
+      }
+      .btn-outline {
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+      }
+      .btn-outline:hover {
+        background: #f5f5f5;
+      }
+      .btn-print-fast {
+        background: var(--gradient-pink);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+        font-size: 15px;
+        padding: 10px 30px;
+      }
+      .btn-print-fast:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 76, 139, 0.4);
+      }
+
+      /* Custom Modal */
+      .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .custom-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .custom-modal {
+        background: white;
+        padding: 35px 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 380px;
+        width: 90%;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+      .custom-modal-overlay.show .custom-modal {
+        transform: translateY(0);
+      }
+      .custom-modal-icon {
+        font-size: 50px;
+        color: #ff4d4f;
+        margin-bottom: 15px;
+      }
+      .custom-modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+      }
+      .custom-modal-text {
+        font-size: 15px;
+        color: var(--text-gray);
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+      .custom-modal-btn {
+        background: var(--gradient-pink);
+        color: white;
+        border: none;
+        padding: 10px 40px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+      .custom-modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 76, 139, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <script>
+        if (localStorage.getItem("cardSystem_sidebar") === "collapsed")
+          document.getElementById("sidebar").classList.add("collapsed");
+      </script>
+
+      <div class="sidebar-top">
+        <div class="brand">
+          <button id="sidebarToggle" class="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="brand-icon">
+            <img
+              src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
+              alt="Logo"
+            />
+          </div>
+          <div class="brand-text">
+            <h2>ระบบออกบัตรประจำตัว</h2>
+            <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์</p>
+          </div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item active">
+            <a href="add-user.html" class="nav-link">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>กรอกข้อมูลออกบัตร อพม.</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="create-card.html" class="nav-link">
+              <i class="fa-solid fa-address-card"></i>
+              <span>ออกบัตรประจำตัว อพม.</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="dashboard-layout">
+        <div class="panel">
+          <div class="section-header">
+            <div class="title-with-back">
+              <a
+                href="index.html"
+                class="btn-back-circle"
+                title="ย้อนกลับไปหน้าหลัก"
+              >
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+              <div class="section-title-wrap">
+                <div class="section-icon">
+                  <i class="fa-solid fa-address-card"></i>
+                </div>
+                <div class="section-title">
+                  <h2>กรอกข้อมูลออกบัตร อพม.</h2>
+                  <p>กรอกข้อมูลเฉพาะส่วนที่สำหรับแสดงบนบัตร</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setup-section">
+            <div class="type-selector">
+              <label
+                style="
+                  font-weight: 600;
+                  color: var(--primary-pink);
+                  font-size: 15px;
+                "
+                >ประเภทบัตร :</label
+              >
+              <div class="radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    name="cardType"
+                    value="domestic"
+                    checked
+                  />
+                  อพม. ในประเทศ
+                </label>
+                <label>
+                  <input type="radio" name="cardType" value="international" />
+                  อพม. ในต่างประเทศ
+                </label>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 15px">
+                <label
+                  style="
+                    font-weight: 600;
+                    color: var(--primary-pink);
+                    font-size: 15px;
+                  "
+                  >ระบุจำนวนบัตรที่ต้องการพิมพ์</label
+                >
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <input
+                    type="number"
+                    id="cardCount"
+                    class="form-control"
+                    style="
+                      width: 80px;
+                      text-align: center;
+                      height: 38px;
+                      padding: 0;
+                    "
+                    value="1"
+                    min="1"
+                    max="50"
+                  />
+                  <span style="color: var(--text-gray); font-size: 14px"
+                    >ใบ</span
+                  >
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="btnGenerateForms"
+              >
+                <i class="fa-solid fa-list-check"></i> ตกลง
+              </button>
+            </div>
+          </div>
+
+          <form id="addUserForm">
+            <div id="formsContainer"></div>
+
+            <div class="form-actions" id="formActions" style="display: none">
+              <button type="button" class="btn btn-outline" id="btnReset">
+                <i class="fa-solid fa-rotate-right"></i> ล้างข้อมูลทั้งหมด
+              </button>
+              <button type="button" class="btn btn-print-fast" id="btnPrintNow">
+                <i class="fa-solid fa-print"></i> พิมพ์บัตรประจำตัว
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal แจ้งเตือนทั่วไป -->
+    <div class="custom-modal-overlay" id="alertModal">
+      <div class="custom-modal">
+        <div class="custom-modal-icon">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <div class="custom-modal-title">แจ้งเตือน</div>
+        <div class="custom-modal-text" id="alertModalText">ข้อความ</div>
+        <button class="custom-modal-btn" id="closeAlertBtn">ตกลง</button>
+      </div>
+    </div>
+
+    <!-- Modal ยืนยันล้างข้อมูล -->
+    <div class="custom-modal-overlay" id="confirmModal">
+      <div class="custom-modal">
+        <div class="custom-modal-icon" style="color: #ff9800">
+          <i class="fa-solid fa-circle-question"></i>
+        </div>
+        <div class="custom-modal-title">ยืนยันการล้างข้อมูล</div>
+        <div class="custom-modal-text" id="confirmModalText">ข้อความ</div>
+        <div style="display: flex; gap: 10px; justify-content: center">
+          <button class="btn btn-outline" id="cancelConfirmBtn">ยกเลิก</button>
+          <button
+            class="custom-modal-btn"
+            id="okConfirmBtn"
+            style="background: var(--gradient-pink)"
+          >
+            ตกลง
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="add-user.js"></script>
+  </body>
+</html>

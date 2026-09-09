@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ออกบัตรประจำตัว อพม.</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+      :root {
+        --primary-pink: #f94c8b;
+        --gradient-pink: linear-gradient(135deg, #f94c8b 0%, #ff6a9f 100%);
+        --bg-main: #fafbfe;
+        --bg-panel: #ffffff;
+        --text-dark: #333333;
+        --text-gray: #777777;
+        --text-light: #aaaaaa;
+        --border-color: #eeeeee;
+        --sidebar-width: 310px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Prompt", sans-serif;
+      }
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-dark);
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--bg-panel);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+        transition: width 0.3s ease;
+        height: 100vh;
+      }
+      .sidebar-top {
+        padding: 20px 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar.collapsed .brand {
+        padding: 0;
+        justify-content: center;
+      }
+      .sidebar.collapsed .brand-text,
+      .sidebar.collapsed .brand-icon {
+        display: none;
+      }
+      .sidebar.collapsed .nav-link span {
+        display: none;
+      }
+      .sidebar.collapsed .nav-link {
+        justify-content: center;
+        padding: 12px 0;
+      }
+      .sidebar.collapsed .nav-link i {
+        font-size: 20px;
+        margin: 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        margin-bottom: 30px;
+      }
+      .menu-toggle {
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        color: var(--text-gray);
+        cursor: pointer;
+        transition: color 0.2s;
+        padding: 5px;
+        flex-shrink: 0;
+      }
+      .menu-toggle:hover {
+        color: var(--primary-pink);
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .brand-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .brand-text {
+        white-space: nowrap;
+      }
+      .brand-text h2 {
+        font-size: 15px;
+        color: var(--primary-pink);
+        line-height: 1.2;
+        margin-bottom: 2px;
+      }
+      .brand-text p {
+        font-size: 9.5px;
+        letter-spacing: -0.2px;
+        color: var(--text-gray);
+        line-height: 1.3;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+      .nav-item {
+        padding: 5px 20px;
+        margin-bottom: 5px;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        color: var(--text-gray);
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .nav-link:hover {
+        background-color: #fff5f8;
+        color: var(--primary-pink);
+      }
+      .nav-item.active .nav-link {
+        background: var(--gradient-pink);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .dashboard-layout {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+      }
+      .panel {
+        background: var(--bg-panel);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-pink);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+      }
+
+      .title-with-back {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .btn-back-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-gray);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        flex-shrink: 0;
+      }
+      .btn-back-circle:hover {
+        background: #fff0f5;
+        color: var(--primary-pink);
+        border-color: #ffb8d2;
+        transform: translateX(-3px);
+      }
+
+      .filter-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+      }
+      .filter-row-1 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+      /* 💡 ปรับ Grid ใหม่จาก 4 ช่องให้เหลือ 3 ช่อง (ลบปุ่ม filter ออกไป 1) */
+      .filter-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+      }
+
+      .search-box {
+        position: relative;
+      }
+      .search-box label,
+      .filter-group label {
+        display: block;
+        font-size: 13px;
+        color: var(--text-gray);
+        margin-bottom: 8px;
+      }
+      .search-box input {
+        width: 100%;
+        height: 42px;
+        padding: 10px 15px 10px 40px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 14px;
+        outline: none;
+      }
+      .search-box i {
+        position: absolute;
+        left: 15px;
+        bottom: 13px;
+        color: var(--text-light);
+      }
+
+      .filter-group select {
+        width: 100%;
+        height: 42px;
+        padding: 0 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 14px;
+        outline: none;
+        color: var(--text-dark);
+        background: white;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--gradient-pink);
+        color: white;
+        border: none;
+        height: 42px;
+        padding: 0 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 76, 139, 0.4);
+      }
+
+      .user-list {
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: white;
+      }
+
+      .list-header {
+        display: grid;
+        grid-template-columns: 50px 1.2fr 1.5fr 2fr 1fr 1fr;
+        padding: 15px 20px;
+        background: #fff5f8;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+        border-bottom: 1px solid #ffe0eb;
+        position: sticky;
+        top: -25px;
+        z-index: 10;
+      }
+      .list-item {
+        display: grid;
+        grid-template-columns: 50px 1.2fr 1.5fr 2fr 1fr 1fr;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #f9f9f9;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .list-item:hover {
+        background-color: #fcfcfc;
+      }
+      .list-item.selected {
+        background-color: #fff0f5;
+      }
+      .list-item input[type="checkbox"],
+      .list-header input[type="checkbox"] {
+        accent-color: var(--primary-pink);
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .user-col {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        overflow: hidden;
+      }
+      .user-icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        font-size: 20px;
+      }
+      .user-icon-box.male {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+      .user-icon-box.female {
+        background-color: #fce4ec;
+        color: #c2185b;
+      }
+      .user-icon-box.neutral {
+        background-color: #f5f5f5;
+        color: #777;
+      }
+
+      .loading-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--text-gray);
+        font-size: 15px;
+      }
+
+      .list-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        flex-shrink: 0;
+        border-top: 1px solid var(--border-color);
+      }
+      .selection-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .selected-badge {
+        background: #fff0f5;
+        color: var(--primary-pink);
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #ffb8d2;
+      }
+      .clear-btn {
+        color: #ff4d4f;
+        background: #fff1f0;
+        border: 1px solid #ffa39e;
+        padding: 8px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+      .clear-btn:hover {
+        background: #ff4d4f;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
+      }
+
+      .pagination-info {
+        font-size: 14px;
+        color: var(--text-gray);
+        margin-right: 15px;
+      }
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .page-btn {
+        border: 1px solid var(--border-color);
+        background: white;
+        min-width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--text-dark);
+        font-size: 14px;
+        font-weight: 500;
+        transition: 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 10px;
+      }
+      .page-btn:hover:not(:disabled) {
+        background: #fff5f8;
+        color: var(--primary-pink);
+        border-color: #ffb8d2;
+      }
+      .page-btn.active {
+        background: var(--gradient-pink);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 10px rgba(249, 76, 139, 0.3);
+      }
+      .page-btn:disabled {
+        background: #f5f5f5;
+        color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .custom-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .custom-modal {
+        background: white;
+        padding: 35px 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 380px;
+        width: 90%;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+      .custom-modal-overlay.show .custom-modal {
+        transform: translateY(0);
+      }
+      .custom-modal-icon {
+        font-size: 50px;
+        color: #ff4d4f;
+        margin-bottom: 15px;
+      }
+      .custom-modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+      }
+      .custom-modal-text {
+        font-size: 15px;
+        color: var(--text-gray);
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+      .custom-modal-btn {
+        background: var(--gradient-pink);
+        color: white;
+        border: none;
+        padding: 10px 40px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+      .custom-modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 76, 139, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <script>
+        if (localStorage.getItem("cardSystem_sidebar") === "collapsed")
+          document.getElementById("sidebar").classList.add("collapsed");
+      </script>
+
+      <div class="sidebar-top">
+        <div class="brand">
+          <button id="sidebarToggle" class="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="brand-icon">
+            <img
+              src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
+              alt="Logo"
+            />
+          </div>
+          <div class="brand-text">
+            <h2>ระบบออกบัตรประจำตัว</h2>
+            <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์</p>
+          </div>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="add-user.html" class="nav-link"
+              ><i class="fa-solid fa-user-plus"></i>
+              <span>กรอกข้อมูลรายใหม่ อพม.</span></a
+            >
+          </li>
+          <li class="nav-item active">
+            <a href="create-card.html" class="nav-link"
+              ><i class="fa-solid fa-address-card"></i>
+              <span>ออกบัตรประจำตัว อพม.</span></a
+            >
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="dashboard-layout">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="title-with-back">
+              <a
+                href="index.html"
+                class="btn-back-circle"
+                title="ย้อนกลับไปหน้าหลัก"
+              >
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+              <h3 class="panel-title">
+                <i class="fa-solid fa-user-group"></i> เลือกข้อมูลออกบัตรประจำตัว อพม.
+              </h3>
+            </div>
+          </div>
+
+          <div class="filter-container">
+            <div class="filter-row-1">
+              <div class="search-box">
+                <label>ชื่อ - สกุล</label><i class="fa-solid fa-user"></i>
+                <input
+                  type="text"
+                  id="searchName"
+                  placeholder="ค้นหาชื่อ-สกุล..."
+                />
+              </div>
+              <div class="search-box">
+                <label>เลขทะเบียนที่</label><i class="fa-solid fa-hashtag"></i>
+                <input
+                  type="text"
+                  id="searchRegId"
+                  placeholder="ค้นหาเลขทะเบียน..."
+                />
+              </div>
+              <div class="search-box">
+                <label>เลขบัตรประชาชน</label><i class="fa-solid fa-id-card"></i>
+                <input
+                  type="text"
+                  id="searchIdCard"
+                  placeholder="ค้นหาเลขบัตรประชาชน..."
+                />
+              </div>
+            </div>
+
+            <div class="filter-row-2">
+              <div class="filter-group">
+                <label>อำเภอ</label>
+                <select id="districtFilter">
+                  <option value="ทั้งหมด">ทั้งหมด</option>
+                  <option value="เมืองสกลนคร">เมืองสกลนคร</option>
+                  <option value="กุสุมาลย์">กุสุมาลย์</option>
+                  <option value="กุดบาก">กุดบาก</option>
+                  <option value="พรรณานิคม">พรรณานิคม</option>
+                  <option value="พังโคน">พังโคน</option>
+                  <option value="วาริชภูมิ">วาริชภูมิ</option>
+                  <option value="นิคมน้ำอูน">นิคมน้ำอูน</option>
+                  <option value="วานรนิวาส">วานรนิวาส</option>
+                  <option value="คำตากล้า">คำตากล้า</option>
+                  <option value="บ้านม่วง">บ้านม่วง</option>
+                  <option value="อากาศอำนวย">อากาศอำนวย</option>
+                  <option value="สว่างแดนดิน">สว่างแดนดิน</option>
+                  <option value="ส่องดาว">ส่องดาว</option>
+                  <option value="เต่างอย">เต่างอย</option>
+                  <option value="โคกศรีสุพรรณ">โคกศรีสุพรรณ</option>
+                  <option value="เจริญศิลป์">เจริญศิลป์</option>
+                  <option value="โพนนาแก้ว">โพนนาแก้ว</option>
+                  <option value="ภูพาน">ภูพาน</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label>ตำบล</label>
+                <select id="subDistrictFilter">
+                  <option value="ทั้งหมด">ทั้งหมด</option>
+                </select>
+              </div>
+
+              <!-- 💡 ลบปุ่ม Filter ออกไปแล้ว -->
+
+              <button id="previewBtn" class="btn-primary">
+                <i class="fa-regular fa-eye"></i> ดูตัวอย่างและพิมพ์บัตร
+              </button>
+            </div>
+          </div>
+
+          <div class="user-list" id="userList">
+            <div class="loading-state">
+              <i
+                class="fa-solid fa-spinner fa-spin"
+                style="
+                  font-size: 24px;
+                  color: var(--primary-pink);
+                  margin-bottom: 10px;
+                "
+              ></i>
+              <p>กำลังดึงข้อมูล...</p>
+            </div>
+          </div>
+
+          <div class="list-footer">
+            <div class="selection-info">
+              <div class="selected-badge">
+                <i class="fa-solid fa-check-to-slot"></i> เลือกแล้ว
+                <span id="selectedCountNum">0</span> คน
+              </div>
+              <button class="clear-btn" id="clearBtn">
+                <i class="fa-solid fa-trash-can"></i> ล้างการเลือก
+              </button>
+            </div>
+            <div style="display: flex; align-items: center">
+              <span class="pagination-info"
+                >รวม
+                <span
+                  id="totalUserCount"
+                  style="font-weight: 600; color: var(--text-dark)"
+                  >0</span
+                >
+                รายการ</span
+              >
+              <div class="pagination-controls" id="paginationControls"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="custom-modal-overlay" id="alertModal">
+      <div class="custom-modal">
+        <div class="custom-modal-icon">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <div class="custom-modal-title">แจ้งเตือน</div>
+        <div class="custom-modal-text" id="alertModalText">
+          กรุณาเลือกผู้รับบัตรอย่างน้อย 1 คนครับ
+        </div>
+        <button class="custom-modal-btn" id="closeAlertBtn">ตกลง</button>
+      </div>
+    </div>
+
+    <script src="create-card.js"></script>
+  </body>
+</html>
