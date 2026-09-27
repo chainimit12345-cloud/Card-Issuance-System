@@ -39,7 +39,9 @@
         overflow: hidden;
       }
 
-      /* Sidebar */
+      /* =========================================
+         Sidebar (ปรับแก้ไอคอนและ Scrollbar แล้ว)
+         ========================================= */
       .sidebar {
         width: var(--sidebar-width);
         background-color: var(--bg-panel);
@@ -47,15 +49,21 @@
         display: flex;
         flex-direction: column;
         z-index: 10;
-        transition: width 0.3s ease;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         height: 100vh;
+        overflow-x: hidden;
       }
       .sidebar-top {
         padding: 20px 0;
         flex: 1;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .sidebar-top::-webkit-scrollbar {
+        width: 0px;
+        display: none;
       }
       .sidebar.collapsed {
         width: 80px;
@@ -69,15 +77,13 @@
         display: none;
       }
       .sidebar.collapsed .nav-link span {
-        display: none;
-      }
-      .sidebar.collapsed .nav-link {
-        justify-content: center;
-        padding: 12px 0;
+        opacity: 0;
+        visibility: hidden;
+        width: 0;
       }
       .sidebar.collapsed .nav-link i {
+        margin-right: 0;
         font-size: 20px;
-        margin: 0;
       }
 
       .brand {
@@ -133,21 +139,31 @@
         list-style: none;
       }
       .nav-item {
-        padding: 5px 20px;
+        padding: 5px 15px;
         margin-bottom: 5px;
       }
       .nav-link {
         display: flex;
         align-items: center;
-        gap: 15px;
-        padding: 12px 20px;
+        padding: 12px 15px;
         color: var(--text-gray);
         text-decoration: none;
         border-radius: 12px;
         font-weight: 500;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         white-space: nowrap;
-        overflow: hidden;
+      }
+      .nav-link i {
+        width: 30px;
+        text-align: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+      }
+      .nav-link span {
+        transition: opacity 0.3s ease;
+        opacity: 1;
       }
       .nav-link:hover {
         background-color: #fff5f8;
@@ -159,7 +175,9 @@
         box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
       }
 
-      /* Main Content */
+      /* =========================================
+         Main Content 
+         ========================================= */
       .main-content {
         flex: 1;
         display: flex;
@@ -518,6 +536,7 @@
     </style>
   </head>
   <body>
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <script>
         if (localStorage.getItem("cardSystem_sidebar") === "collapsed")
@@ -542,16 +561,25 @@
         </div>
 
         <ul class="nav-menu">
+          <!-- เมนูแรก (Active) -->
           <li class="nav-item active">
             <a href="add-user.html" class="nav-link">
               <i class="fa-solid fa-user-plus"></i>
               <span>กรอกข้อมูลออกบัตร อพม.</span>
             </a>
           </li>
+          <!-- เมนูที่ 2 -->
           <li class="nav-item">
             <a href="create-card.html" class="nav-link">
               <i class="fa-solid fa-address-card"></i>
               <span>ออกบัตรประจำตัว อพม.</span>
+            </a>
+          </li>
+          <!-- เมนูที่ 3 (การตั้งค่า) -->
+          <li class="nav-item">
+            <a href="settings.html" class="nav-link">
+              <i class="fa-solid fa-signature"></i>
+              <span>ตั้งค่าผู้ออกบัตร</span>
             </a>
           </li>
         </ul>
@@ -705,6 +733,7 @@
       </div>
     </div>
 
+    <!-- ลิงก์ไปยัง JS -->
     <script src="add-user.js"></script>
   </body>
 </html>
