@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบออกบัตรประจำตัวอาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ อพม.</title>
+    <title>
+      ระบบออกบัตรประจำตัวอาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ อพม.
+    </title>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
@@ -158,7 +160,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
-        width: 360px; /* ขยายขนาดกว้างขึ้นเล็กน้อยเพื่อรองรับข้อความยาว */
+        width: 360px;
         height: 115px;
         text-align: left;
         text-decoration: none;
@@ -185,7 +187,7 @@
       }
 
       .card-info {
-        padding-right: 45px; /* กันไม่ให้ข้อความยาววิ่งไปชนปุ่มลูกศรด้านขวา */
+        padding-right: 45px;
       }
       .card-info h3 {
         color: var(--text-dark);
@@ -195,7 +197,7 @@
       }
       .card-info p {
         color: var(--text-gray);
-        font-size: 13px; /* ปรับขนาดเล็กลงนิดนึงให้อยู่ในกรอบสวยงาม */
+        font-size: 13px;
         line-height: 1.4;
       }
 
@@ -232,7 +234,6 @@
         font-size: 24px;
       }
 
-      /* เปลี่ยนดีไซน์ Footer ใหม่ให้เข้ากับโลโก้สีชมพู */
       footer {
         background-color: #ffffff;
         background-image:
@@ -254,7 +255,7 @@
 
       .footer-logo .logo-icon {
         background: transparent;
-        width: 55px; /* ขยายโลโก้ footer ให้ชัดเจนขึ้น */
+        width: 55px;
         height: 55px;
         box-shadow: none;
       }
@@ -262,7 +263,7 @@
       .footer-logo-text h2 {
         font-size: 18px;
         font-weight: 600;
-        color: var(--primary-pink); /* เปลี่ยนสีตัวอักษรให้เป็นสีชมพู */
+        color: var(--primary-pink);
       }
       .footer-logo-text p {
         font-size: 13px;
@@ -301,7 +302,7 @@
     <header>
       <div class="logo-container">
         <div class="logo-icon">
-          <!-- เรียกใช้ไฟล์รูปภาพตราสัญลักษณ์ (เปลี่ยน \ เป็น /) -->
+          <!-- เรียกใช้ไฟล์รูปภาพตราสัญลักษณ์ -->
           <img
             src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
             alt="ตราสัญลักษณ์ พม."
@@ -312,59 +313,24 @@
           <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ อพม.</p>
         </div>
       </div>
-      <!-- <button class="login-btn">
-        <i class="fa-regular fa-user"></i> เข้าสู่ระบบเจ้าหน้าที่
-      </button> -->
     </header>
 
     <main class="hero">
       <div class="hero-content">
-        <!-- <div class="badge">
-          <i class="fa-solid fa-shield-halved"></i> ระบบออกบัตรออนไลน์
-        </div>
-        <h1>
-          ออกบัตร<span class="pink">ง่าย</span><br />รวดเร็ว
-          <span class="pink">ทันสมัย</span>
-        </h1>
-        <p>ระบบออกบัตรที่ปลอดภัย สะดวก รวดเร็ว ครบจบในระบบเดียว</p> -->
-
         <div class="action-cards-container">
-          <!-- ลิงก์ไปหน้าทำบัตร -->
+          <!-- การ์ดที่ 1: ลิงก์ไปหน้าทำบัตร อพม. -->
           <a href="add-user.html" class="action-card">
             <div class="card-icon-circle">
               <i class="fa-solid fa-id-card-clip"></i>
             </div>
             <div class="card-info">
               <h3>ออกบัตรประจำตัว</h3>
-              <!-- ใส่ <br> เพื่อบังคับขึ้นบรรทัดใหม่ตรงหน้าคำว่า และ -->
               <p>อาสาสมัครพัฒนาสังคมและ<br />ความมั่นคงของมนุษย์ (อพม.)</p>
             </div>
             <div class="btn-arrow">
               <i class="fa-solid fa-chevron-right"></i>
             </div>
           </a>
-
-          <div class="action-card disabled">
-            <div class="card-icon-circle">
-              <i class="fa-regular fa-calendar-days"></i>
-            </div>
-            <div class="card-info">
-              <h3>Coming Soon</h3>
-              <p>เร็วๆ นี้</p>
-            </div>
-            <i class="fa-solid fa-lock icon-lock"></i>
-          </div>
-
-          <div class="action-card disabled">
-            <div class="card-icon-circle">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <div class="card-info">
-              <h3>Coming Soon</h3>
-              <p>เร็วๆ นี้</p>
-            </div>
-            <i class="fa-solid fa-lock icon-lock"></i>
-          </div>
         </div>
       </div>
     </main>
@@ -372,12 +338,6 @@
     <footer>
       <div class="footer-left">
         <div class="footer-logo">
-          <!-- <div class="logo-icon">
-            <img
-              src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
-              alt="ตราสัญลักษณ์ พม."
-            />
-          </div> -->
           <div class="footer-logo-text">
             <h2>ระบบออกบัตรประจำตัว</h2>
             <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์ (อพม.)</p>
