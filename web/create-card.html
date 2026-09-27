@@ -40,6 +40,9 @@
         overflow: hidden;
       }
 
+      /* =========================================
+         Sidebar (ปรับแก้ไอคอนและ Scrollbar แล้ว)
+         ========================================= */
       .sidebar {
         width: var(--sidebar-width);
         background-color: var(--bg-panel);
@@ -47,8 +50,9 @@
         display: flex;
         flex-direction: column;
         z-index: 10;
-        transition: width 0.3s ease;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         height: 100vh;
+        overflow-x: hidden;
       }
       .sidebar-top {
         padding: 20px 0;
@@ -56,6 +60,11 @@
         display: flex;
         flex-direction: column;
         overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .sidebar-top::-webkit-scrollbar {
+        width: 0px;
+        display: none;
       }
       .sidebar.collapsed {
         width: 80px;
@@ -69,15 +78,13 @@
         display: none;
       }
       .sidebar.collapsed .nav-link span {
-        display: none;
-      }
-      .sidebar.collapsed .nav-link {
-        justify-content: center;
-        padding: 12px 0;
+        opacity: 0;
+        visibility: hidden;
+        width: 0;
       }
       .sidebar.collapsed .nav-link i {
+        margin-right: 0;
         font-size: 20px;
-        margin: 0;
       }
 
       .brand {
@@ -113,7 +120,6 @@
         height: 100%;
         object-fit: contain;
       }
-
       .brand-text {
         white-space: nowrap;
       }
@@ -134,21 +140,31 @@
         list-style: none;
       }
       .nav-item {
-        padding: 5px 20px;
+        padding: 5px 15px;
         margin-bottom: 5px;
       }
       .nav-link {
         display: flex;
         align-items: center;
-        gap: 15px;
-        padding: 12px 20px;
+        padding: 12px 15px;
         color: var(--text-gray);
         text-decoration: none;
         border-radius: 12px;
         font-weight: 500;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         white-space: nowrap;
-        overflow: hidden;
+      }
+      .nav-link i {
+        width: 30px;
+        text-align: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+      }
+      .nav-link span {
+        transition: opacity 0.3s ease;
+        opacity: 1;
       }
       .nav-link:hover {
         background-color: #fff5f8;
@@ -160,6 +176,9 @@
         box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
       }
 
+      /* =========================================
+         Main Content & Dashboard
+         ========================================= */
       .main-content {
         flex: 1;
         display: flex;
@@ -198,7 +217,6 @@
         gap: 12px;
         margin: 0;
       }
-
       .title-with-back {
         display: flex;
         align-items: center;
@@ -239,7 +257,6 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 15px;
       }
-      /* 💡 ปรับ Grid ใหม่จาก 4 ช่องให้เหลือ 3 ช่อง (ลบปุ่ม filter ออกไป 1) */
       .filter-row-2 {
         display: grid;
         grid-template-columns: 1fr 1fr auto;
@@ -272,7 +289,6 @@
         bottom: 13px;
         color: var(--text-light);
       }
-
       .filter-group select {
         width: 100%;
         height: 42px;
@@ -316,7 +332,6 @@
         border-radius: 12px;
         background: white;
       }
-
       .list-header {
         display: grid;
         grid-template-columns: 50px 1.2fr 1.5fr 2fr 1fr 1fr;
@@ -353,7 +368,6 @@
         height: 18px;
         cursor: pointer;
       }
-
       .user-col {
         display: flex;
         align-items: center;
@@ -550,6 +564,7 @@
     </style>
   </head>
   <body>
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <script>
         if (localStorage.getItem("cardSystem_sidebar") === "collapsed")
@@ -572,17 +587,24 @@
             <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์</p>
           </div>
         </div>
+
         <ul class="nav-menu">
           <li class="nav-item">
             <a href="add-user.html" class="nav-link"
               ><i class="fa-solid fa-user-plus"></i>
-              <span>กรอกข้อมูลรายใหม่ อพม.</span></a
+              <span>กรอกข้อมูลออกบัตร อพม.</span></a
             >
           </li>
           <li class="nav-item active">
             <a href="create-card.html" class="nav-link"
               ><i class="fa-solid fa-address-card"></i>
               <span>ออกบัตรประจำตัว อพม.</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="settings.html" class="nav-link"
+              ><i class="fa-solid fa-signature"></i>
+              <span>ตั้งค่าผู้ออกบัตร</span></a
             >
           </li>
         </ul>
@@ -602,7 +624,8 @@
                 <i class="fa-solid fa-arrow-left"></i>
               </a>
               <h3 class="panel-title">
-                <i class="fa-solid fa-user-group"></i> เลือกข้อมูลออกบัตรประจำตัว อพม.
+                <i class="fa-solid fa-user-group"></i>
+                เลือกข้อมูลออกบัตรประจำตัว อพม.
               </h3>
             </div>
           </div>
@@ -668,8 +691,6 @@
                 </select>
               </div>
 
-              <!-- 💡 ลบปุ่ม Filter ออกไปแล้ว -->
-
               <button id="previewBtn" class="btn-primary">
                 <i class="fa-regular fa-eye"></i> ดูตัวอย่างและพิมพ์บัตร
               </button>
@@ -717,6 +738,7 @@
       </div>
     </main>
 
+    <!-- Modal แจ้งเตือน -->
     <div class="custom-modal-overlay" id="alertModal">
       <div class="custom-modal">
         <div class="custom-modal-icon">
@@ -724,12 +746,13 @@
         </div>
         <div class="custom-modal-title">แจ้งเตือน</div>
         <div class="custom-modal-text" id="alertModalText">
-          กรุณาเลือกผู้รับบัตรอย่างน้อย 1 คนครับ
+          กรุณาเลือกผู้รับบัตรอย่างน้อย 1 คน
         </div>
         <button class="custom-modal-btn" id="closeAlertBtn">ตกลง</button>
       </div>
     </div>
 
+    <!-- ลิงก์ไปยัง JS -->
     <script src="create-card.js"></script>
   </body>
 </html>
