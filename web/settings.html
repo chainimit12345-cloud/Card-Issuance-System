@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ตั้งค่าผู้ออกบัตร อพม.</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-pink: #f94c8b;
+        --gradient-pink: linear-gradient(135deg, #f94c8b 0%, #ff6a9f 100%);
+        --bg-main: #fafbfe;
+        --bg-panel: #ffffff;
+        --text-dark: #333333;
+        --text-gray: #777777;
+        --text-light: #aaaaaa;
+        --border-color: #eeeeee;
+        --sidebar-width: 310px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Prompt", sans-serif;
+      }
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-dark);
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* =========================================
+         Sidebar (ปรับแก้ไอคอนและ Scrollbar แล้ว)
+         ========================================= */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--bg-panel);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .sidebar-top {
+        padding: 20px 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .sidebar-top::-webkit-scrollbar {
+        width: 0px;
+        display: none;
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar.collapsed .brand {
+        padding: 0;
+        justify-content: center;
+      }
+      .sidebar.collapsed .brand-text,
+      .sidebar.collapsed .brand-icon {
+        display: none;
+      }
+      .sidebar.collapsed .nav-link span {
+        opacity: 0;
+        visibility: hidden;
+        width: 0;
+      }
+      .sidebar.collapsed .nav-link i {
+        margin-right: 0;
+        font-size: 20px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        margin-bottom: 30px;
+      }
+      .menu-toggle {
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        color: var(--text-gray);
+        cursor: pointer;
+        transition: color 0.2s;
+        padding: 5px;
+        flex-shrink: 0;
+      }
+      .menu-toggle:hover {
+        color: var(--primary-pink);
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .brand-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .brand-text {
+        white-space: nowrap;
+      }
+      .brand-text h2 {
+        font-size: 15px;
+        color: var(--primary-pink);
+        line-height: 1.2;
+        margin-bottom: 2px;
+      }
+      .brand-text p {
+        font-size: 9.5px;
+        letter-spacing: -0.2px;
+        color: var(--text-gray);
+        line-height: 1.3;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+      .nav-item {
+        padding: 5px 15px;
+        margin-bottom: 5px;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        color: var(--text-gray);
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+      .nav-link i {
+        width: 30px;
+        text-align: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+      }
+      .nav-link span {
+        transition: opacity 0.3s ease;
+        opacity: 1;
+      }
+      .nav-link:hover {
+        background-color: #fff5f8;
+        color: var(--primary-pink);
+      }
+      .nav-item.active .nav-link {
+        background: var(--gradient-pink);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+
+      /* =========================================
+         Main Content - Settings
+         ========================================= */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: #fafbfe;
+      }
+      .dashboard-layout {
+        padding: 25px;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .panel {
+        background: var(--bg-panel);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .title-with-back {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .btn-back-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-gray);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        flex-shrink: 0;
+      }
+      .btn-back-circle:hover {
+        background: #fff0f5;
+        color: var(--primary-pink);
+        border-color: #ffb8d2;
+        transform: translateX(-3px);
+      }
+      .section-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .section-icon {
+        width: 50px;
+        height: 50px;
+        background: #fff0f5;
+        color: var(--primary-pink);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+      }
+      .section-title h2 {
+        font-size: 18px;
+        color: var(--text-dark);
+      }
+      .section-title p {
+        font-size: 13px;
+        color: var(--text-gray);
+      }
+
+      /* Settings Form Styles */
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+      }
+      .form-control {
+        width: 100%;
+        height: 45px;
+        padding: 0 15px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text-dark);
+        outline: none;
+        transition: all 0.3s;
+        background-color: #ffffff;
+      }
+      .form-control:focus {
+        border-color: var(--primary-pink);
+        box-shadow: 0 0 0 3px rgba(249, 76, 139, 0.1);
+      }
+
+      .signature-upload-wrapper {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .sig-preview-box {
+        width: 280px;
+        height: 140px;
+        border: 2px dashed #ffb8d2;
+        background-color: #fff5f8;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .sig-preview-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 10px;
+        display: none;
+      }
+      .sig-placeholder {
+        text-align: center;
+        color: #ff85b3;
+      }
+      .sig-placeholder i {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+      .sig-placeholder p {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .sig-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+        border: none;
+      }
+      .btn-outline {
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+      }
+      .btn-outline:hover {
+        background: #f5f5f5;
+      }
+      .btn-upload {
+        background: #f0f7ff;
+        color: #0066ff;
+        border: 1px solid #cce0ff;
+      }
+      .btn-upload:hover {
+        background: #0066ff;
+        color: white;
+      }
+      .btn-delete {
+        background: #fff1f0;
+        color: #ff4d4f;
+        border: 1px solid #ffa39e;
+      }
+      .btn-delete:hover {
+        background: #ff4d4f;
+        color: white;
+      }
+      .btn-primary {
+        background: var(--gradient-pink);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 76, 139, 0.3);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 76, 139, 0.4);
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      /* Modal แจ้งเตือนความสำเร็จ */
+      .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .custom-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .custom-modal {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 350px;
+        width: 90%;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .custom-modal-overlay.show .custom-modal {
+        transform: translateY(0);
+      }
+      .custom-modal i {
+        font-size: 45px;
+        color: #52c41a;
+        margin-bottom: 15px;
+      }
+      .custom-modal h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+      }
+      .custom-modal p {
+        font-size: 14px;
+        color: var(--text-gray);
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <script>
+        if (localStorage.getItem("cardSystem_sidebar") === "collapsed") {
+          document.getElementById("sidebar").classList.add("collapsed");
+        }
+      </script>
+
+      <div class="sidebar-top">
+        <div class="brand">
+          <button id="sidebarToggle" class="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="brand-icon">
+            <img
+              src="img/Seal_of_the_Ministry_of_Social_Development_and_Human_Security_(Thailand),_coloured.svg.png"
+              alt="Logo"
+              onerror="this.style.display = 'none'"
+            />
+          </div>
+          <div class="brand-text">
+            <h2>ระบบออกบัตรประจำตัว</h2>
+            <p>อาสาสมัครพัฒนาสังคมและความมั่นคงของมนุษย์</p>
+          </div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="add-user.html" class="nav-link">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>กรอกข้อมูลออกบัตร อพม.</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="create-card.html" class="nav-link">
+              <i class="fa-solid fa-address-card"></i>
+              <span>ออกบัตรประจำตัว อพม.</span>
+            </a>
+          </li>
+          <!-- เมนูตั้งค่า (Active) -->
+          <li class="nav-item active">
+            <a href="settings.html" class="nav-link">
+              <i class="fa-solid fa-signature"></i>
+              <span>ตั้งค่าผู้ออกบัตร</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="dashboard-layout">
+        <div class="panel">
+          <div class="section-header">
+            <div class="title-with-back">
+              <a
+                href="index.html"
+                class="btn-back-circle"
+                title="ย้อนกลับไปหน้าหลัก"
+              >
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+              <div class="section-title-wrap">
+                <div class="section-icon">
+                  <i class="fa-solid fa-signature"></i>
+                </div>
+                <div class="section-title">
+                  <h2>ตั้งค่าข้อมูลผู้ออกบัตร</h2>
+                  <p>ข้อมูลนี้จะถูกนำไปใช้แสดงในด้านหน้าของบัตร อพม. ทุกใบ</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- เนื้อหาตั้งค่า -->
+          <div class="form-group">
+            <label
+              ><i
+                class="fa-solid fa-pen-nib"
+                style="color: var(--primary-pink); margin-right: 5px"
+              ></i>
+              รูปลายมือชื่อ (ลายเซ็น)</label
+            >
+            <div class="signature-upload-wrapper">
+              <div class="sig-preview-box">
+                <div class="sig-placeholder" id="noSigText">
+                  <i class="fa-solid fa-image"></i>
+                  <p>ยังไม่มีลายเซ็น</p>
+                </div>
+                <img id="signaturePreview" src="" alt="ลายเซ็น" />
+              </div>
+
+              <div class="sig-actions">
+                <input
+                  type="file"
+                  id="signatureUpload"
+                  accept="image/*"
+                  style="display: none"
+                />
+                <button
+                  type="button"
+                  class="btn btn-upload"
+                  onclick="document.getElementById('signatureUpload').click()"
+                >
+                  <i class="fa-solid fa-upload"></i> เลือกรูปภาพลายเซ็น
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-delete"
+                  onclick="deleteSignature()"
+                >
+                  <i class="fa-solid fa-trash-can"></i> ลบรูปภาพทิ้ง
+                </button>
+                <p
+                  style="
+                    font-size: 12px;
+                    color: var(--text-light);
+                    margin-top: 5px;
+                  "
+                >
+                  * แนะนำรูปภาพพื้นหลังโปร่งใส (.PNG) ขนาดแนวนอน
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top: 30px">
+            <div class="form-group">
+              <label>ชื่อผู้ออกบัตร</label>
+              <input
+                type="text"
+                id="issuerName"
+                class="form-control"
+                placeholder="เช่น (นางสาวแรมรุ้ง วรวัธ)"
+              />
+            </div>
+            <div class="form-group">
+              <label>ตำแหน่งผู้ออกบัตร</label>
+              <input
+                type="text"
+                id="issuerPosition"
+                class="form-control"
+                placeholder="เช่น อธิบดีกรมพัฒนาสังคม..."
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="window.location.href = 'index.html'"
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="saveSettings()"
+            >
+              <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Success -->
+    <div class="custom-modal-overlay" id="successModal">
+      <div class="custom-modal">
+        <i class="fa-solid fa-circle-check"></i>
+        <h3>บันทึกข้อมูลสำเร็จ!</h3>
+        <p>
+          ข้อมูลลายเซ็นและผู้ออกบัตรถูกบันทึกเรียบร้อยแล้ว<br />จะแสดงผลในหน้าตรวจสอบบัตรทันที
+        </p>
+        <button
+          class="btn btn-primary"
+          style="width: 100%; justify-content: center"
+          onclick="closeSuccessModal()"
+        >
+          ตกลง
+        </button>
+      </div>
+    </div>
+
+    <!-- ลิงก์ไปยังไฟล์ JavaScript -->
+    <script src="settings.js"></script>
+  </body>
+</html>
