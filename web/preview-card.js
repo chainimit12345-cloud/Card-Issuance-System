@@ -1,12 +1,17 @@
 // =========================================================
-// ⚙️ ตั้งค่าผู้ออกบัตร (แก้ไขตรงนี้เมื่อมีการเปลี่ยนผู้ออกบัตร)
+// ⚙️ ดึงข้อมูลผู้ออกบัตรจาก LocalStorage
 // =========================================================
+const savedSettings = JSON.parse(
+  localStorage.getItem("opm_issuerSettings") || "{}",
+);
+
+// ถ้ามีการบันทึกค่าไว้ในตั้งค่า ให้ใช้ค่านั้น ถ้าไม่มีให้ใช้ค่าเริ่มต้น
 const ISSUER_SETTINGS = {
-  signaturePath: "img/ลายเซ็น.png",
-  fullName: "(นางสาวแรมรุ้ง วรวัธ)",
-  fullNameEng: "(Miss Ramrung Worawat)",
-  position: "อธิบดีกรมพัฒนาสังคมและสวัสดิการ",
-  positionEng: "Director-General",
+  signaturePath: savedSettings.signatureImg || "img/ลายเซ็น.png",
+  fullName: savedSettings.issuerName || "(นางสาวแรมรุ้ง วรวัธ)",
+  fullNameEng: savedSettings.issuerName || "(Miss Ramrung Worawat)", // ถ้าในอนาคตมีช่องกรอก ENG แยก ค่อยปรับอีกที
+  position: savedSettings.issuerPosition || "อธิบดีกรมพัฒนาสังคมและสวัสดิการ",
+  positionEng: "Director-General", // ใช้ค่าเริ่มต้น
 };
 // =========================================================
 
@@ -197,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                     
-                    <!-- 🔥 ส่วนลายเซ็น (ปรับขนาดแล้ว) 🔥 -->
+                    <!-- 🔥 ส่วนลายเซ็น (ดึงจาก Settings) 🔥 -->
                     <div style="text-align: center; margin-top: auto; line-height: 1.15;">
                         <img src="${ISSUER_SETTINGS.signaturePath}" alt="ลายเซ็น" style="height: 24px; object-fit: contain; margin: 0 auto; display: block;" onerror="this.style.display='none'; document.getElementById('fallback-sign-${index}').style.display='block';">
                         <div id="fallback-sign-${index}" style="font-family: 'Brush Script MT', cursive; font-size: 14px; color: #002b5e; transform: rotate(-5deg); display: none;">Signature</div>
@@ -272,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                     
-                    <!-- 🔥 ส่วนลายเซ็น (ปรับขนาดแล้ว) 🔥 -->
+                    <!-- 🔥 ส่วนลายเซ็น (ดึงจาก Settings) 🔥 -->
                     <div style="text-align: center; margin-top: auto; line-height: 1.15;">
                         <img src="${ISSUER_SETTINGS.signaturePath}" alt="ลายเซ็น" style="height: 24px; object-fit: contain; margin: 0 auto; display: block;" onerror="this.style.display='none'; document.getElementById('fallback-sign-${index}').style.display='block';">
                         <div id="fallback-sign-${index}" style="font-family: 'Brush Script MT', cursive; font-size: 14px; color: #002b5e; transform: rotate(-5deg); display: none;">ลายมือชื่อ</div>
